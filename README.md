@@ -24,6 +24,7 @@ feedback on the proposed solution. It has not been approved to ship in Chrome.
   - [Example](#example)
 - [Alternatives considered](#alternatives-considered)
   - [CSS Pseudo-class only (:replaced-by-user-agent)](#css-pseudo-class-only-replaced-by-user-agent)
+- [Developer Opt-in and Opt-out](#developer-opt-in-and-opt-out)
 - [Privacy & Security Considerations](#privacy--security-considerations)
 - [Accessibility Considerations](#accessibility-considerations)
 
@@ -101,6 +102,14 @@ A site can track which elements are replaced by using a capturing listener on th
 ### CSS Pseudo-class only (:replaced-by-user-agent)
 
 While would be useful for making style changes, it is not ergonomic to monitor from script for other changes. This is considered as a possible future enhancement.
+
+## Web developer hints
+
+While this explainer focuses on observation primitives (`uareplacestart`, `uareplaceend`, and `replacedByUserAgent`), it's reasonable for developers to prefer that such features not be used, or possibly be used, on their sites, because it is impractical to adapt the site when the user uses them without significantly degrading functionality or the user's experience. The browser might then not offer that feature, or offer a different experience (e.g., in a side panel or pop-up window). Deciding on a mechanism for developer hints is out of scope for this initial proposal, but is an area for potential future work.
+
+Future work in this direction should consider this sort of case and might want to establish a registry of different kinds of transformations that sites could hint about. For example, it might look something like `<html notransform="interior-decor-generation">` (or an element-scoped equivalent). Some effort would be required to make sure that vendors with similar features eventually supported interoperable tokens. This is somewhat analogous to the existing `translate` and `autocomplete` attributes.
+
+If there is browser vendor and web developer interest, it would be useful at that time to also consider whether it would also be useful for hints to opt _in_ to offering particular features, as a signal to browsers that the feature is likely to be particularly beneficial, especially for browsers that support transformations of this kind but wish to take a more cautious approach to applying them.
 
 ## Privacy & Security Considerations
 - **Data Protection**: User agents are encouraged to prevent sensitive replacement content from being accessed by the page without explicit user intent.
