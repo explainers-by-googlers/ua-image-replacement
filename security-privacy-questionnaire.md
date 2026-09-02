@@ -32,9 +32,12 @@ No. The API does not expose any personal information, PII, or derived attributes
 
 ## 4. How do the features in your specification deal with sensitive information?
 
-The specification treats substitute content as potentially containing sensitive user data:
-- **Media Isolation**: Page scripts cannot use this API to read or exfiltrate replacement image pixels. User agents are expected to protect sensitive replacement content from exfiltration.
-- **No Input Exposure**: No user inputs, prompts, or personal photos used to create the replacement are exposed via DOM attributes or event payloads.
+The API itself is strictly an observation and lifecycle notification mechanism and does not implement the image replacement or its isolation.
+
+However, user agents implementing image replacement features must evaluate the sensitivity of the replacement contentr .
+
+- **Media Isolation**: When replacement media incorporates private user data or intent (such as generative AI virtual try-on), user agents are expected to provide isolation that prevents page scripts from reading or exfiltrating the replacement pixels (e.g., isolating rendered content so canvas readback operations see only the original resource). For transformations that are not privacy-sensitive (such as auto-colorization or upscaling), user agents may determine that such isolation is not required.
+- **No Input Exposure**: No user inputs, prompts, or personal photos used to create the replacement are exposed to the web page.
 - **UA Discretion**: User agents may withhold firing events and leave `replacedByUserAgent` set to `false` if the fact of use of a replacement feature is itself too sensitive.
 
 
