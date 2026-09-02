@@ -24,7 +24,7 @@ feedback on the proposed solution. It has not been approved to ship in Chrome.
   - [Example](#example)
 - [Alternatives considered](#alternatives-considered)
   - [CSS Pseudo-class only (:replaced-by-user-agent)](#css-pseudo-class-only-replaced-by-user-agent)
-- [Developer Opt-in and Opt-out](#developer-opt-in-and-opt-out)
+- [Web developer hints](#web-developer-hints)
 - [Privacy & Security Considerations](#privacy--security-considerations)
 - [Accessibility Considerations](#accessibility-considerations)
 
@@ -53,7 +53,7 @@ A Chrome feature which offers image replacement has heard feedback from multiple
 
 ### Non-goals
 
-- **Replacement media access**: This API does not intend to make replacement content directly available to the page (especially it may reflect user data or intent), and user agents are encouraged to replace images in a way that protects against this where feasible.
+- **Replacement media access and isolation**: This API does not provide a mechanism for the page to access replacement media, nor does it provide media isolation itself. Instead, the mechanism of replacement—and whether and how replacement content is isolated from the page—is the responsibility of the underlying browser feature performing the replacement.
 - **Content-driven replacement**: This API does not propose to allow authors to initiate such replacements of any kind.
 - **Enumeration of possible image replacement features**: A future enhancement could provide information about what kind of replacement image is being used, but since this may have privacy and compatibility risk implications, it's left out of scope for now. It's likely that, if this information is added, it will be optional.
 
@@ -112,7 +112,10 @@ Future work in this direction should consider this sort of case and might want t
 If there is browser vendor and web developer interest, it would be useful at that time to also consider whether it would also be useful for hints to opt _in_ to offering particular features, as a signal to browsers that the feature is likely to be particularly beneficial, especially for browsers that support transformations of this kind but wish to take a more cautious approach to applying them.
 
 ## Privacy & Security Considerations
-- **Data Protection**: User agents are encouraged to prevent sensitive replacement content from being accessed by the page without explicit user intent.
+- **Data Protection and Image Isolation**: This API only notifies the page of lifecycle transitions and does not itself isolate replacement image data from script. The privacy sensitivity of replacement media depends on the specific browser feature:
+  - Transformations that incorporate sensitive user data or intent (such as virtual try-on using a user's photo) require strong isolation. For such features, user agents are expected to isolate the replacement image so that page scripts cannot inspect or exfiltrate it (for example, by presenting the replacement within user agent shadow DOM or cross-origin contexts such that canvas pixel readback reflects only the original image resource).
+  - Other transformations might not be privacy-sensitive (for example, client-side photo colorization, contrast enhancement, or super-resolution upscaling), where isolation from page scripts may not be necessary.
+  It is therefore up to the user agent to evaluate the sensitivity of a given transformation and provide appropriate isolation.
 - **Anti-Fingerprinting**: `uareplacestart` and `uareplaceend` events only fire when an actual replacement operation is initiated by explicit user intent or user-configured browser policy. Web pages MUST NOT be able to probe for replacement capabilities by observing side-effects without the user using such a feature.
 
 ## Accessibility Considerations
